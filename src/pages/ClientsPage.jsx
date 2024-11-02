@@ -21,13 +21,13 @@ function ClientsPage() {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Clients List</h1>
+    <div className="">
+      <h4 className="text-xl font-bold mb-4 text-gray">Clientes</h4>
       <ul>
         {clients.map((client) => (
           <li
             key={client.id}
-            className="mb-4 p-4 border flex items-center justify-between rounded border-primary text-gray-600 gap-4"
+            className="mb-4 p-4 border flex items-center justify-between rounded border-gray text-gray gap-4"
           >
             <div className="flex items-center">
               {client.urlPhoto ? (
@@ -42,18 +42,19 @@ function ClientsPage() {
                 </div>
               )}
               <div>
-                <p className="font-bold">{client.name}</p>
+                <p className="font-bold ">{client.name}</p>
 
                 <a
                   href={`https://wa.me/${client.phone}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-3 items-center"
+                  className="flex gap-3 items-center text-gray text-sm"
                 >
                   {client.phone}
-                  <span className="material-symbols-outlined text-gray-600 text-lg">
-                    sms
+                  <span className="material-symbols-outlined  text-base">
+                  forward_to_inbox
                   </span>
+                
                 </a>
               </div>
             </div>
@@ -63,7 +64,7 @@ function ClientsPage() {
                 onClick={() => handleEditClick(client)}
                 className="flex items-center"
               >
-                <span className="material-symbols-outlined text-primary">
+                <span className="material-symbols-outlined text-gray">
                   edit
                 </span>
               </button>

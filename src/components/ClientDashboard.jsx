@@ -1,8 +1,13 @@
 // src/components/ClientDashboard.jsx
+import { useAuth } from "../contexts/AuthContext";
+
 function ClientDashboard() {
+  
+  const { user } = useAuth(); // Obtener clientes desde el contexto
+  console.log(user)
   return (
     <div>
-      <p>Panel del Cliente - Reservas disponibles</p>
+      <p>{user.name}</p>
       {/* Aquí puedes añadir el listado de reservas */}
     </div>
   );

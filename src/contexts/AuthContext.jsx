@@ -9,7 +9,8 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [clients, setClients] = useState([]); // Nuevo estado para almacenar clientes
+  const [clients, setClients] = useState([]); // Almacenar clientes
+  const [services, setServices] = useState([]); // Almacenar servicios del admin
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,6 +27,23 @@ export const AuthProvider = ({ children }) => {
       setClients(clientsList);
     } catch (error) {
       console.error("Error loading clients:", error);
+    }
+  };
+
+  // Función para cargar la lista de servicios del administrador
+  const loadServices = async () => {
+    if (user?.role === "admin") {
+      try {
+        const servicesCollection = collection(db, "Admin", user.uid, "services");
+        const servicesSnapshot = await getDocs(servicesCollection);
+        const servicesList = servicesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setServices(servicesList);
+      } catch (error) {
+        console.error("Error loading services:", error);
+      }
     }
   };
 
@@ -52,9 +70,10 @@ export const AuthProvider = ({ children }) => {
           const existingUser = userDoc.data();
           setUser(existingUser);
 
-          // Cargar clientes si el usuario es "admin"
+          // Cargar clientes y servicios si el usuario es "admin"
           if (existingUser.role === "admin") {
             await loadClients(); // Cargar lista de clientes solo si es admin
+            await loadServices(); // Cargar lista de servicios solo si es admin
           }
 
           // Redirigir según el estado del usuario
@@ -70,7 +89,6 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         setUser(null);
-        // Redirigir a login si no está autenticado y no está en /login
         if (location.pathname !== "/login") {
           navigate("/login");
         }
@@ -83,7 +101,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, clients, loading, signInWithGoogle, loadClients }}
+      value={{
+        user,
+        clients,
+        services,
+        loading,
+        signInWithGoogle,
+        loadClients,
+        loadServices,
+      }}
     >
       {children}
     </AuthContext.Provider>

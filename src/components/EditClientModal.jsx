@@ -7,9 +7,14 @@ import { doc, updateDoc } from "firebase/firestore";
 function EditClientModal({ client, onClose }) {
   const [name, setName] = useState(client.name);
   const [phone, setPhone] = useState(client.phone);
-  const [email, setEmail] = useState(client.email);
 
   const { loadClients } = useAuth(); // Obtener clientes desde el contexto
+
+  const close = ()=>{
+    setTimeout(() => {
+      onClose()
+    }, 500);
+  }
 
   // Función para manejar la actualización de los datos del cliente
   const handleSubmit = async (e) => {
@@ -23,7 +28,6 @@ function EditClientModal({ client, onClose }) {
        await updateDoc(clientRef, {
          name,
          phone,
-         email,
        });
        loadClients();
      } catch (error) {
@@ -35,7 +39,12 @@ function EditClientModal({ client, onClose }) {
   return (
     <div className="fixed inset-0 bg-white p-6">
       <div className=" flex justify-center items-center flex-col  h-full max-w-lg m-auto">
-        <h4 className=" mb-24 text-center w-full text-primary">Edit Client</h4>
+        <h4 className=" mb-16 text-center w-full text-primary">Edit Client</h4>
+        <img
+                  src={client.urlPhoto}
+                  alt={`${client.name}'s profile`}
+                  className="w-20 h-20 rounded-full mb-8 "
+                />
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full  items-center w-full"
@@ -109,33 +118,7 @@ function EditClientModal({ client, onClose }) {
               </label>
             </div>
 
-            <div className="wave-group">
-              <input
-                required
-                type="email"
-                className="input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <span className="bar"></span>
-              <label className="label">
-                <span className="label-char" style={{ "--index": 0 }}>
-                  E
-                </span>
-                <span className="label-char" style={{ "--index": 1 }}>
-                  m
-                </span>
-                <span className="label-char" style={{ "--index": 2 }}>
-                  a
-                </span>
-                <span className="label-char" style={{ "--index": 3 }}>
-                  i
-                </span>
-                <span className="label-char" style={{ "--index": 4 }}>
-                  l
-                </span>
-              </label>
-            </div>
+            
           </div>
           <div className="flex flex-col w-full gap-2">
             <button
@@ -149,11 +132,11 @@ function EditClientModal({ client, onClose }) {
             </button>
 
             <button
-              onClick={onClose}
+              onClick={close}
               type="button"
-              className="bg-gray-500 text-center w-full rounded h-12 relative text-white  font-semibold"
+              className="bg-ligth-gray text-center w-full rounded h-12 relative text-white  font-semibold group"
             >
-              <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0  z-10 bg-gray-600">
+              <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-gray">
                 <span className="material-symbols-outlined">close</span>
               </div>
               <p className="">Cancelar</p>

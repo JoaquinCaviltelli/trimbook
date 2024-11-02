@@ -3,8 +3,8 @@ import ClientDashboard from "../components/ClientDashboard";
 
 function HomePage() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold">Bienvenido a la peluquería</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold">Nombre de la peluqueria</h1>
       <ClientDashboard />
     </div>
   );

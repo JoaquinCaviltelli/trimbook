@@ -5,7 +5,9 @@ export default {
     extend: {
       colors: {
         "primary": "#17795E",
-        "secundary": "#55ae90", // Nombre que elijas para el color
+        "secundary": "#55ae90",
+        "gray":"#666666",
+        "ligth-gray":"#979797",
       },
     },
   },
