@@ -86,11 +86,16 @@ function ServiceModal({ service, onClose }) {
     }
   };
 
+  const close = ()=>{
+    setTimeout(() => {
+      onClose()
+    }, 500);
+  }
 
   return (
     <div className="fixed inset-0 bg-white p-6">
       <div className="flex justify-center items-center flex-col h-full max-w-lg m-auto">
-        <h4 className="mb-16 text-center w-full text-primary">
+        <h4 className="mb-28 text-center w-full text-primary">
           {service ? "Editar Servicio" : "Añadir Servicio"}
         </h4>
         <form
@@ -210,7 +215,7 @@ function ServiceModal({ service, onClose }) {
           <div className="flex flex-col w-full gap-2">
             <button
               type="submit"
-              className="bg-secundary text-center w-full rounded h-12 relative text-white font-semibold group"
+              className="bg-secundary text-sm text-center w-full rounded h-12 relative text-white font-semibold group"
             >
               <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-primary">
                 <span className="material-symbols-outlined">save</span>
@@ -221,7 +226,7 @@ function ServiceModal({ service, onClose }) {
               <button
                 type="button"
                 onClick={handleDelete}
-                className="bg-red-500 text-center w-full rounded h-12 relative text-white font-semibold group"
+                className="bg-red-500 text-sm text-center w-full rounded h-12 relative text-white font-semibold group"
               >
                 <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-red-600">
                   <span className="material-symbols-outlined">delete</span>
@@ -231,8 +236,8 @@ function ServiceModal({ service, onClose }) {
             )}
             <button
               type="button"
-              onClick={onClose}
-              className="bg-ligth-gray text-center w-full rounded h-12 relative text-white font-semibold group"
+              onClick={close}
+              className="bg-ligth-gray text-sm text-center w-full rounded h-12 relative text-white font-semibold group"
             >
               <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-gray">
                 <span className="material-symbols-outlined">close</span>

@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [clients, setClients] = useState([]); // Almacenar clientes
   const [services, setServices] = useState([]); // Almacenar servicios del admin
+  const [schedules, setSchedules] = useState({}); // Almacenar horarios
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,10 +32,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Función para cargar la lista de servicios del administrador
-  const loadServices = async () => {
-    if (user?.role === "admin") {
+  const loadServices = async (uid) => {
+    
       try {
-        const servicesCollection = collection(db, "Admin", user.uid, "services");
+        const servicesCollection = collection(db, "Admin", uid, "services");
         const servicesSnapshot = await getDocs(servicesCollection);
         const servicesList = servicesSnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -44,6 +45,21 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error("Error loading services:", error);
       }
+    
+  };
+
+  // Función para cargar horarios laborales
+  const loadSchedules = async (uid) => {
+    try {
+      const scheduleCollection = collection(db, "Admin", uid, "workSchedules");
+      const scheduleSnapshot = await getDocs(scheduleCollection);
+      const scheduleData = {};
+      scheduleSnapshot.forEach((doc) => {
+        scheduleData[doc.id] = doc.data().timeRanges;
+      });
+      setSchedules(scheduleData);
+    } catch (error) {
+      console.error("Error loading schedules:", error);
     }
   };
 
@@ -70,10 +86,11 @@ export const AuthProvider = ({ children }) => {
           const existingUser = userDoc.data();
           setUser(existingUser);
 
-          // Cargar clientes y servicios si el usuario es "admin"
+          // Cargar clientes, servicios y horarios si el usuario es "admin"
           if (existingUser.role === "admin") {
             await loadClients(); // Cargar lista de clientes solo si es admin
-            await loadServices(); // Cargar lista de servicios solo si es admin
+            await loadServices(user.uid); // Cargar lista de servicios solo si es admin
+            await loadSchedules(user.uid); // Cargar horarios
           }
 
           // Redirigir según el estado del usuario
@@ -105,10 +122,12 @@ export const AuthProvider = ({ children }) => {
         user,
         clients,
         services,
+        schedules, // Proveer horarios
         loading,
         signInWithGoogle,
         loadClients,
         loadServices,
+        loadSchedules, // Asegúrate de incluir loadSchedules aquí
       }}
     >
       {children}

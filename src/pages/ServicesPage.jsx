@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import ServiceModal from "../components/ServiceModal";
 
 function ServicesPage() {
-  const { services } = useAuth();
+  const { services} = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
@@ -22,6 +22,7 @@ function ServicesPage() {
     setSelectedService(null);
   };
 
+
   return (
     <div className="">
       <h4 className="text-xl font-bold mb-4 text-gray">Servicios</h4>
@@ -35,23 +36,28 @@ function ServicesPage() {
         {services.map((service) => (
           <li
             key={service.id}
-            className="mb-4 text-gray border-2 flex justify-between rounded border-primary text-gray-600 gap-4"
+            className="mb-4 text-gray border flex justify-between rounded border-primary text-gray-600 gap-4 "
           >
-            <div className="p-4">
-              <p className="font-bold text-lg">{service.serviceName}</p>
-              <p>Duración: {service.serviceDuration} min</p>
-              <p>Precio: ${service.servicePrice}</p>
+            <div className="p-4 ">
+              <p className="font-bold mb-2 text-primary">{service.serviceName}</p>
+              <p className="flex gap-2 text-xs items-center ">
+                <span className="material-symbols-outlined leading-3 text-base">timer</span>
+                {service.serviceDuration} min
+              </p>
+              <p className="flex gap-2 text-xs items-center">
+                <span className="material-symbols-outlined  leading-3 text-base">payments</span>$
+                {service.servicePrice}
+              </p>
             </div>
-            
-              <button
-                onClick={() => handleEditServiceClick(service)}
-                className="flex bg-primary items-center "
-              >
-                <span className="material-symbols-outlined text-white px-4">
-                  edit
-                </span>
-              </button>
-            
+
+            <button
+              onClick={() => handleEditServiceClick(service)}
+              className="flex bg-primary items-center "
+            >
+              <span className="material-symbols-outlined text-white px-3">
+                edit
+              </span>
+            </button>
           </li>
         ))}
       </ul>

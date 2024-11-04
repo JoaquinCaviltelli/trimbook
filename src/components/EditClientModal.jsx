@@ -10,30 +10,29 @@ function EditClientModal({ client, onClose }) {
 
   const { loadClients } = useAuth(); // Obtener clientes desde el contexto
 
-  const close = ()=>{
+  const close = () => {
     setTimeout(() => {
-      onClose()
+      onClose();
     }, 500);
-  }
+  };
 
   // Función para manejar la actualización de los datos del cliente
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       setTimeout(() => {
-        
-         onClose();  
-       }, 500);
-       const clientRef = doc(db, "clientes", client.id);
-       await updateDoc(clientRef, {
-         name,
-         phone,
-       });
-       loadClients();
-     } catch (error) {
-       console.error("Error updating client:", error);
-       alert("Failed to update client.");
-     }
+      setTimeout(() => {
+        onClose();
+      }, 500);
+      const clientRef = doc(db, "clientes", client.id);
+      await updateDoc(clientRef, {
+        name,
+        phone,
+      });
+      loadClients();
+    } catch (error) {
+      console.error("Error updating client:", error);
+      alert("Failed to update client.");
+    }
   };
 
   return (
@@ -41,10 +40,10 @@ function EditClientModal({ client, onClose }) {
       <div className=" flex justify-center items-center flex-col  h-full max-w-lg m-auto">
         <h4 className=" mb-16 text-center w-full text-primary">Edit Client</h4>
         <img
-                  src={client.urlPhoto}
-                  alt={`${client.name}'s profile`}
-                  className="w-20 h-20 rounded-full mb-8 "
-                />
+          src={client.urlPhoto}
+          alt={`${client.name}'s profile`}
+          className="w-20 h-20 rounded-full mb-8 "
+        />
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full  items-center w-full"
@@ -117,8 +116,6 @@ function EditClientModal({ client, onClose }) {
                 </span>
               </label>
             </div>
-
-            
           </div>
           <div className="flex flex-col w-full gap-2">
             <button

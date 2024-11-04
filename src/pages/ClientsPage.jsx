@@ -27,9 +27,9 @@ function ClientsPage() {
         {clients.map((client) => (
           <li
             key={client.id}
-            className="mb-4 p-4 border flex items-center justify-between rounded border-gray text-gray gap-4"
+           className="mb-4 text-gray border flex justify-between rounded border-primary text-gray-600 gap-4 "
           >
-            <div className="flex items-center">
+            <div className="p-4 flex">
               {client.urlPhoto ? (
                 <img
                   src={client.urlPhoto}
@@ -59,16 +59,16 @@ function ClientsPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            
               <button
                 onClick={() => handleEditClick(client)}
-                className="flex items-center"
+                className="flex bg-primary items-center "
               >
-                <span className="material-symbols-outlined text-gray">
+                <span className="material-symbols-outlined text-white px-3">
                   edit
                 </span>
               </button>
-            </div>
+            
           </li>
         ))}
       </ul>
