@@ -25,12 +25,15 @@ function WorkSchedulePage() {
       loadSchedules(user.uid);
     }
   }, [user, loadSchedules]);
+  
 
+  
   const handleAddScheduleClick = (day) => {
     setSelectedDay(day);
     setEditingRange(null);
     setIsModalOpen(true);
   };
+
 
   const handleEditScheduleClick = (day, range, index) => {
     setSelectedDay(day);
@@ -61,30 +64,37 @@ function WorkSchedulePage() {
 
   const deleteTimeRange = async (day, index) => {
     if (!user) return;
-
+  
     const dayDocRef = doc(db, "Admin", user.uid, "workSchedules", day);
     const updatedTimeRanges = schedules[day].filter((_, i) => i !== index);
-
-    await setDoc(dayDocRef, { timeRanges: updatedTimeRanges });
+  
+    // Si ya no hay rangos de tiempo, eliminar el documento del día
+    if (updatedTimeRanges.length === 0) {
+      await deleteDoc(dayDocRef); // Eliminar el documento
+    } else {
+      await setDoc(dayDocRef, { timeRanges: updatedTimeRanges }); // Actualizar el documento con los nuevos rangos
+    }
+  
     await loadSchedules(user.uid); // Recargar horarios después de eliminar
   };
+  
 
   return (
     <div className="">
       <h4 className="text-xl font-bold mb-4 text-gray">Horarios Laborales</h4>
       <ul>
         {daysOfWeek.map((day) => (
-          <li key={day} className="mb-4 p-4  text-gray gap-4">
-            <div className="flex gap-2 items-center mb-3">
+          <li key={day} className="p-4 pb-0  text-gray gap-4">
+            <div className="flex gap-2 items-center mb-3 border rounded border-primary">
               <button
                 onClick={() => handleAddScheduleClick(day)}
-                className="p-2 w-8 h-8 flex justify-center items-center bg-gray text-white rounded"
+                className="p-2 w-8 h-8 flex justify-center items-center bg-primary text-white"
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
-              <p className="font-bold capitalize text-gray">{day}</p>
+              <p className="font-bold capitalize text-primary">{day}</p>
             </div>
-            <ul className="flex gap-1 flex-col justify-center items-start">
+            <ul className={`flex gap-1 flex-col justify-center items-start ${schedules[day] && "pb-4"}`}>
               {schedules[day] && (
                 <div className="flex gap-2 font-medium justify-between items-center  text-xs">
                   <p className="w-16">Desde</p>
@@ -94,7 +104,7 @@ function WorkSchedulePage() {
               {(schedules[day] || []).map((range, index) => (
                 <li
                   key={index}
-                  className="flex gap-2 font-medium justify-between items-center  text-xs"
+                  className="flex gap-2 font-medium justify-between items-center  text-xs w-full"
                 >
                   <div className="flex gap-2">
                     <span className="bg-ligth-gray text-white w-16 h-8 flex justify-center items-center rounded">
@@ -107,7 +117,7 @@ function WorkSchedulePage() {
                   <div className="flex gap-1">
                     <button
                       onClick={() => handleEditScheduleClick(day, range, index)}
-                      className="p-2 w-8 h-8 flex justify-center items-center bg-teal-800 text-white rounded"
+                      className="p-2 w-8 h-8 flex justify-center items-center bg-sky-800 text-white rounded"
                     >
                       <span className="material-symbols-outlined  text-base">
                         edit

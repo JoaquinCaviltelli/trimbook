@@ -113,7 +113,7 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
                     && "group-hover:w-[100%]"
                 }`}
               >
-                <span className="material-symbols-outlined">
+                <span className={`material-symbols-outlined ${error && "animate-shake"}`}>
                   {error ? "error" : success ? "check" : "save"}
                 </span>
               </div>
