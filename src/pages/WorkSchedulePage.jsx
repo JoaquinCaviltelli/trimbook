@@ -74,32 +74,40 @@ function WorkSchedulePage() {
       <h4 className="text-xl font-bold mb-4 text-gray">Horarios Laborales</h4>
       <ul>
         {daysOfWeek.map((day) => (
-          <li
-            key={day}
-            className="mb-4 p-4 border rounded border-primary text-gray gap-4"
-          >
+          <li key={day} className="mb-4 p-4  text-gray gap-4">
             <div className="flex gap-2 items-center mb-3">
               <button
                 onClick={() => handleAddScheduleClick(day)}
-                className="p-2 w-6 h-6 flex justify-center items-center bg-primary text-white rounded"
+                className="p-2 w-8 h-8 flex justify-center items-center bg-gray text-white rounded"
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
-              <p className="font-bold capitalize text-primary">{day}</p>
+              <p className="font-bold capitalize text-gray">{day}</p>
             </div>
-            <ul className="flex gap-1">
+            <ul className="flex gap-1 flex-col justify-center items-start">
+              {schedules[day] && (
+                <div className="flex gap-2 font-medium justify-between items-center  text-xs">
+                  <p className="w-16">Desde</p>
+                  <p className="w-16">Hasta</p>
+                </div>
+              )}
               {(schedules[day] || []).map((range, index) => (
                 <li
                   key={index}
-                  className="flex gap-2 font-medium text-gray-700 border border-primary rounded justify-between items-center p-3 text-xs flex-col"
+                  className="flex gap-2 font-medium justify-between items-center  text-xs"
                 >
-                  <span>
-                    {range.startTime} - {range.endTime}
-                  </span>
+                  <div className="flex gap-2">
+                    <span className="bg-ligth-gray text-white w-16 h-8 flex justify-center items-center rounded">
+                      {range.startTime}
+                    </span>
+                    <span className="bg-ligth-gray text-white w-16 h-8 flex justify-center items-center rounded">
+                      {range.endTime}
+                    </span>
+                  </div>
                   <div className="flex gap-1">
                     <button
                       onClick={() => handleEditScheduleClick(day, range, index)}
-                      className="p-2 w-6 h-6 flex justify-center items-center bg-gray text-white rounded"
+                      className="p-2 w-8 h-8 flex justify-center items-center bg-teal-800 text-white rounded"
                     >
                       <span className="material-symbols-outlined  text-base">
                         edit
@@ -107,7 +115,7 @@ function WorkSchedulePage() {
                     </button>
                     <button
                       onClick={() => deleteTimeRange(day, index)}
-                      className="p-2 w-6 h-6 flex justify-center items-center bg-red-800 text-white rounded"
+                      className="p-2 w-8 h-8 flex justify-center items-center bg-red-800 text-white rounded"
                     >
                       <span className="material-symbols-outlined  text-base">
                         delete
