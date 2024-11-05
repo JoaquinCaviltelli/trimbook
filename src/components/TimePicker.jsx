@@ -26,7 +26,6 @@ const TimePicker = ({
     const selectedIndex = Math.round(scrollTop / itemHeight);
 
     if (type === "hour") {
-      console.log(scrollTop);
       setSelectedHour(hours[selectedIndex]);
     } else {
       setSelectedMinute(minutes[selectedIndex]);
@@ -49,7 +48,6 @@ const TimePicker = ({
 
   const centerScroll = (ref, selectedIndex) => {
     if (ref.current) {
-      console.log(selectedIndex);
       ref.current.scrollTo({
         top:
           selectedIndex * itemHeight - (containerHeight / 2 - itemHeight / 2),
@@ -83,10 +81,10 @@ const TimePicker = ({
             {hours.map((hour, index) => (
               <div
                 key={index}
-                className={` text-xl time-item p-2 text-right  text-primary ${
+                className={` text-2xl time-item p-2 font-bold text-right  text-primary ${
                   selectedHour === hour
-                    ? "text-primary font-bold"
-                    : "opacity-30 text-xs"
+                    ? "text-white"
+                    : "opacity-50 text-base"
                 }`}
                 style={{
                   height: `${itemHeight}px`,
@@ -110,10 +108,10 @@ const TimePicker = ({
             {minutes.map((minute, index) => (
               <div
                 key={index}
-                className={`time-item text-xl p-2 text-left text-primary ${
+                className={`time-item text-2xl p-2 font-bold text-left text-primary ${
                   selectedMinute === minute
-                    ? "text-primary font-bold"
-                    : "opacity-30 text-xs"
+                    ? "text-white"
+                    : "opacity-50 text-base"
                 }`}
                 style={{
                   height: `${itemHeight}px`,

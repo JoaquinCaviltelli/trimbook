@@ -7,6 +7,7 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
   const [endHour, setEndHour] = useState(0);
   const [endMinute, setEndMinute] = useState(0);
   const [error, setError] = useState(""); // Estado para manejar el error de validación
+  const [success, setSuccess] = useState(false); // Nuevo estado para manejar el éxito
 
   useEffect(() => {
     if (editingRange) {
@@ -37,11 +38,15 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
     // Validar si la hora de fin es mayor a la hora de inicio
     if (!isValidTimeRange()) {
       setError("La hora de fin debe ser mayor que la hora de inicio.");
+      setTimeout(() => {
+        setError(""); // Limpiar el error después de 1 segundo
+      }, 1000);
       return;
     }
 
-    // Si es válido, limpiar el error y enviar el formulario
-    setError("");
+    // Si es válido, limpiar el error, activar el éxito y enviar el formulario
+    setError(""); // Limpiar error
+    setSuccess(true); // Activar éxito
     const formattedStartTime = `${String(startHour).padStart(2, "0")}:${String(
       startMinute
     ).padStart(2, "0")}`;
@@ -49,6 +54,11 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
       endMinute
     ).padStart(2, "0")}`;
     onAdd(day, formattedStartTime, formattedEndTime);
+
+    // Limpiar el estado de éxito después de 1 segundo
+    setTimeout(() => {
+      setSuccess(false); // Limpiar el estado de éxito
+    }, 3000);
   };
 
   const close = () => {
@@ -60,18 +70,16 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
   return (
     <div className="fixed inset-0 bg-white p-6">
       <div className="flex justify-center items-center flex-col h-full max-w-lg m-auto">
-        <h4 className="mb-28 text-center w-full text-primary">
-          {editingRange
-            ? `Editar Horario para ${day}`
-            : `Añadir Horario para ${day}`}
+        <h4 className="mb-28 text-center w-full text-primary uppercase font-bold">
+          {day}
         </h4>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full items-center w-full"
         >
           <div className="w-full flex flex-col justify-between items-center">
-            <div className="flex justify-center items-center gap-4">
-              <label>Desde</label>
+            <div className="flex justify-center items-center gap-4 w-full relative">
+              <label className="absolute left-0 text-white border w-full p-2 -translate-y-1 bg-secundary rounded font-semibold">Desde</label>
               <TimePicker
                 selectedHour={startHour}
                 selectedMinute={startMinute}
@@ -79,8 +87,8 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
                 setSelectedMinute={setStartMinute}
               />
             </div>
-            <div className="flex justify-center items-center gap-4">
-              <label>Hasta</label>
+            <div className="flex justify-center items-center gap-4 w-full relative">
+              <label className="absolute left-0 text-white border w-full p-2 -translate-y-1 bg-secundary rounded font-semibold">Hasta</label>
               <TimePicker
                 selectedHour={endHour}
                 selectedMinute={endMinute}
@@ -90,18 +98,26 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
             </div>
           </div>
 
-          {/* Mostrar mensaje de error */}
-          {error && <p className="text-red-500 mt-2">{error}</p>}
-
           <div className="flex flex-col w-full gap-2">
+            {/* Mostrar mensaje de error */}
+            {error && <p className="text-red-400 text-center">{error}</p>}
             <button
-              className="bg-secundary text-center w-full rounded h-14 relative text-white font-semibold group"
+              className={`bg-secundary text-center w-full rounded h-14 relative text-white font-semibold group `}
               type="submit"
             >
-              <div className="rounded h-14 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-primary">
-                <span className="material-symbols-outlined">save</span>
+              <div
+                className={`rounded h-14 w-1/6 flex items-center justify-center absolute top-0 z-10 duration-500 bg-primary ${
+                  error
+                    ? "bg-red-500 group-hover:w-[100%]"
+                    : success
+                    && "group-hover:w-[100%]"
+                }`}
+              >
+                <span className="material-symbols-outlined">
+                  {error ? "error" : success ? "check" : "save"}
+                </span>
               </div>
-              <p>{editingRange ? "Actualizar" : "Guardar"}</p>
+              <p>{editingRange ? "Actualizar" : "Agregar"}</p>
             </button>
 
             <button
