@@ -16,6 +16,10 @@ function AdminPage() {
         <Link to="/admin/work-hours" className="text-blue-500 hover:underline">
           Set Work Hours
         </Link>
+        <br />
+        <Link to="/admin/NonWorkingDaysPage" className="text-blue-500 hover:underline">
+          no work
+        </Link>
       </nav>
       <Outlet />
     </div>

@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [clients, setClients] = useState([]); // Almacenar clientes
   const [services, setServices] = useState([]); // Almacenar servicios del admin
   const [schedules, setSchedules] = useState({}); // Almacenar horarios
+  const [nonWorkingDays, setNonWorkingDays] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,19 +34,17 @@ export const AuthProvider = ({ children }) => {
 
   // Función para cargar la lista de servicios del administrador
   const loadServices = async (uid) => {
-    
-      try {
-        const servicesCollection = collection(db, "Admin", uid, "services");
-        const servicesSnapshot = await getDocs(servicesCollection);
-        const servicesList = servicesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setServices(servicesList);
-      } catch (error) {
-        console.error("Error loading services:", error);
-      }
-    
+    try {
+      const servicesCollection = collection(db, "Admin", uid, "services");
+      const servicesSnapshot = await getDocs(servicesCollection);
+      const servicesList = servicesSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setServices(servicesList);
+    } catch (error) {
+      console.error("Error loading services:", error);
+    }
   };
 
   // Función para cargar horarios laborales
@@ -60,6 +59,25 @@ export const AuthProvider = ({ children }) => {
       setSchedules(scheduleData);
     } catch (error) {
       console.error("Error loading schedules:", error);
+    }
+  };
+
+  // Cargar días no laborables desde Firestore
+  const loadNonWorkingDays = async (uid) => {
+    try {
+      const scheduleRef = doc(db, "Admin", uid); // Referencia al documento del admin
+      const scheduleDoc = await getDoc(scheduleRef);
+
+      if (scheduleDoc.exists()) {
+        const scheduleData = scheduleDoc.data();
+        const nonWorkingDaysList = scheduleData.nonWorkingDays || []; // Si el campo no existe, inicializamos como array vacío
+        setNonWorkingDays(nonWorkingDaysList);
+      } else {
+        console.warn("Documento de días no laborables no encontrado.");
+        setNonWorkingDays([]); // Inicializamos con un array vacío si no existe el documento
+      }
+    } catch (error) {
+      console.error("Error loading non-working days:", error);
     }
   };
 
@@ -91,6 +109,7 @@ export const AuthProvider = ({ children }) => {
             await loadClients(); // Cargar lista de clientes solo si es admin
             await loadServices(user.uid); // Cargar lista de servicios solo si es admin
             await loadSchedules(user.uid); // Cargar horarios
+            await loadNonWorkingDays(user.uid);
           }
 
           // Redirigir según el estado del usuario
@@ -128,6 +147,8 @@ export const AuthProvider = ({ children }) => {
         loadClients,
         loadServices,
         loadSchedules, // Asegúrate de incluir loadSchedules aquí
+        nonWorkingDays, // Nuevo estado para días no laborables
+        loadNonWorkingDays, // Nueva función
       }}
     >
       {children}

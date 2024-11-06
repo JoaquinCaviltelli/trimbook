@@ -8,6 +8,7 @@ import PhonePage from "./pages/PhonePage";
 import ClientsPage from "./pages/ClientsPage";
 import ServicesPage from "./pages/ServicesPage";
 import WorkHoursPage from "./pages/WorkSchedulePage"; // Importar la nueva página de horarios
+import NonWorkingDaysPage from "./pages/NonWorkingDaysPage"; // Importar la nueva página de horarios
 import Spinner from "./components/Spinner";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="clients" element={<ClientsPage />} />
         <Route path="services" element={<ServicesPage />} />
         <Route path="work-hours" element={<WorkHoursPage />} /> {/* Nueva ruta para horarios laborales */}
+        <Route path="NonWorkingDaysPage" element={<NonWorkingDaysPage />} /> {/* Nueva ruta para horarios laborales */}
       </Route>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/phone" element={<PhonePage />} />
