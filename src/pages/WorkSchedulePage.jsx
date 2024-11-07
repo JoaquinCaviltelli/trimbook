@@ -82,15 +82,15 @@ function WorkSchedulePage() {
   return (
     <div className="">
       <h4 className="text-xl font-bold mb-4 text-gray">Horarios Laborales</h4>
-      <ul>
+      <ul className="flex flex-col gap-4">
         {daysOfWeek.map((day) => (
-          <li key={day} className="p-4 pb-0  text-gray gap-4">
-            <div className="flex gap-2 items-center mb-3 border rounded border-primary">
+          <li key={day} className="p-4 pb-0  text-gray gap-4 bg-white shadow-lg">
+            <div className="flex gap-2 items-center mb-3 ">
               <button
                 onClick={() => handleAddScheduleClick(day)}
                 className="p-2 w-8 h-8 flex justify-center items-center bg-primary text-white"
               >
-                <span className="material-symbols-outlined">add</span>
+                <i className="fa-solid fa-plus"></i>
               </button>
               <p className="font-bold capitalize text-primary">{day}</p>
             </div>
@@ -119,17 +119,13 @@ function WorkSchedulePage() {
                       onClick={() => handleEditScheduleClick(day, range, index)}
                       className="p-2 w-8 h-8 flex justify-center items-center bg-sky-800 text-white rounded"
                     >
-                      <span className="material-symbols-outlined  text-base">
-                        edit
-                      </span>
+                      <i className="fa-solid fa-pen-to-square"></i>
                     </button>
                     <button
                       onClick={() => deleteTimeRange(day, index)}
                       className="p-2 w-8 h-8 flex justify-center items-center bg-red-800 text-white rounded"
                     >
-                      <span className="material-symbols-outlined  text-base">
-                        delete
-                      </span>
+                      <i className="fa-solid fa-trash"></i>
                     </button>
                   </div>
                 </li>

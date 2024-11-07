@@ -55,7 +55,7 @@ function ServiceModal({ service, onClose }) {
           servicePrice: price,
         });
       }
-      loadServices();
+      loadServices(user.uid);
       onClose();
     } catch (error) {
       console.error(
@@ -218,7 +218,7 @@ function ServiceModal({ service, onClose }) {
               className="bg-secundary text-sm text-center w-full rounded h-12 relative text-white font-semibold group"
             >
               <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-primary">
-                <span className="material-symbols-outlined">save</span>
+              <i className="fa-solid fa-floppy-disk "></i>
               </div>
               <p className="">{service ? "Guardar Cambios" : "Guardar"}</p>
             </button>
@@ -229,7 +229,7 @@ function ServiceModal({ service, onClose }) {
                 className="bg-red-500 text-sm text-center w-full rounded h-12 relative text-white font-semibold group"
               >
                 <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-red-600">
-                  <span className="material-symbols-outlined">delete</span>
+                <i className="fa-solid fa-trash"></i>
                 </div>
                 <p className="">Eliminar</p>
               </button>
@@ -240,7 +240,7 @@ function ServiceModal({ service, onClose }) {
               className="bg-ligth-gray text-sm text-center w-full rounded h-12 relative text-white font-semibold group"
             >
               <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-gray">
-                <span className="material-symbols-outlined">close</span>
+              <i className="fa-solid fa-xmark"></i>
               </div>
               <p className="">Cancelar</p>
             </button>

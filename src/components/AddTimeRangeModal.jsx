@@ -79,7 +79,7 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
         >
           <div className="w-full flex flex-col justify-between items-center">
             <div className="flex justify-center items-center gap-4 w-full relative">
-              <label className="absolute left-0 text-white border w-full p-2 -translate-y-1 bg-secundary rounded font-semibold">Desde</label>
+              <label className="absolute left-0 text-white w-full p-3 -translate-y-1 bg-primary rounded font-semibold shadow-xl">Desde</label>
               <TimePicker
                 selectedHour={startHour}
                 selectedMinute={startMinute}
@@ -88,7 +88,7 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
               />
             </div>
             <div className="flex justify-center items-center gap-4 w-full relative">
-              <label className="absolute left-0 text-white border w-full p-2 -translate-y-1 bg-secundary rounded font-semibold">Hasta</label>
+              <label className="absolute left-0 text-white  w-full p-3 -translate-y-1 bg-primary rounded font-semibold shadow-xl">Hasta</label>
               <TimePicker
                 selectedHour={endHour}
                 selectedMinute={endMinute}
@@ -113,9 +113,10 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
                     && "group-hover:w-[100%]"
                 }`}
               >
-                <span className={`material-symbols-outlined ${error && "animate-shake"}`}>
+                {error ? <i className="fa-solid fa-circle-exclamation animate-shake"></i> : success ? <i className="fa-solid fa-check"></i>  : <i className="fa-solid fa-floppy-disk "></i>}
+                {/* <span className={`material-symbols-outlined ${error && "animate-shake"}`}>
                   {error ? "error" : success ? "check" : "save"}
-                </span>
+                </span> */}
               </div>
               <p>{editingRange ? "Actualizar" : "Agregar"}</p>
             </button>
@@ -126,7 +127,7 @@ function AddTimeRangeModal({ day, onAdd, onClose, editingRange }) {
               className="bg-ligth-gray text-center w-full rounded h-12 relative text-white font-semibold group"
             >
               <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-gray">
-                <span className="material-symbols-outlined">close</span>
+              <i className="fa-solid fa-xmark"></i>
               </div>
               <p>Cancelar</p>
             </button>

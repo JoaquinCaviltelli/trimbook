@@ -96,15 +96,14 @@ function NonWorkingDaysPage() {
               {/* Renderizamos las partes de la fecha individualmente para poder estilizar */}
               <span className="font-bold text-xs bg-red-500 text-white w-full text-center p-2">{weekday}</span>
               <span className="text-gray text-2xl pt-3">{dayNumber}</span>
-              <span className="text-gray text-sm font-semibold p-1">{` de ${month}`}</span>
+              <span className="text-gray text-sm font-medium p-1">{` de ${month}`}</span>
 
               <button
                 onClick={() => deleteNonWorkingDay(day)}
-                className="absolute -top-3 -right-3 "
+                className="absolute -top-3 -right-3 bg-red-700 rounded-full w-8 h-8"
               >
-                <span className="material-symbols-outlined text-white bg-red-700 scale-90 rounded-full p-1">
-                delete
-              </span>
+                
+              <i className="fa-solid fa-trash text-white"></i>
               </button>
             </li>
           );

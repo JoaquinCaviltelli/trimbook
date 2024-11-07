@@ -36,16 +36,21 @@ function ServicesPage() {
         {services.map((service) => (
           <li
             key={service.id}
-            className="mb-4 text-gray border flex justify-between rounded border-primary text-gray-600 gap-4 "
+            className="mb-4 text-gray flex justify-between  text-gray-600 gap-4 bg-white shadow-xl"
           >
-            <div className="p-4 ">
-              <p className="font-bold mb-2 text-primary">{service.serviceName}</p>
+            <div className="p-4 w-full">
+              <div className="flex justify-between w-full items-center gap-4">
+
+              <p className="font-bold  text-primary">{service.serviceName}</p>
               <p className="flex gap-2 text-xs items-center ">
-                <span className="material-symbols-outlined leading-3 text-base">timer</span>
-                {service.serviceDuration} min
+                
+                <i className="fa-solid fa-clock text-base"></i>
+                {service.serviceDuration}min
               </p>
-              <p className="flex gap-2 text-xs items-center">
-                <span className="material-symbols-outlined  leading-3 text-base">payments</span>$
+              </div>
+              <p className="flex gap-1 text-xs items-center text-gray">
+                
+              <i className="fa-solid fa-dollar-sign"></i>
                 {service.servicePrice}
               </p>
             </div>
@@ -54,9 +59,8 @@ function ServicesPage() {
               onClick={() => handleEditServiceClick(service)}
               className="flex bg-primary items-center "
             >
-              <span className="material-symbols-outlined text-white px-3">
-                edit
-              </span>
+              
+              <i className="fa-solid fa-edit text-white px-3"></i>
             </button>
           </li>
         ))}

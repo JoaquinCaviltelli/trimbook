@@ -20,6 +20,9 @@ function ClientsPage() {
     setIsModalOpen(false);
   };
 
+  // Filtrar solo clientes con el rol 'client'
+  const filteredClients = clients.filter((client) => client.role === "client");
+
   return (
     <div className="">
       <h4 className="text-xl font-bold mb-4 text-gray">Clientes</h4>
@@ -27,7 +30,7 @@ function ClientsPage() {
         {clients.map((client) => (
           <li
             key={client.id}
-           className="mb-4 text-gray border flex justify-between rounded border-primary text-gray-600 gap-4 "
+            className="mb-4 text-gray flex justify-between text-gray-600 gap-4 bg-white shadow-xl"
           >
             <div className="p-4 flex">
               {client.urlPhoto ? (
@@ -48,27 +51,22 @@ function ClientsPage() {
                   href={`https://wa.me/${client.phone}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex gap-3 items-center text-gray text-sm"
-                >
+                  className="text-xs text-gray flex items-center "
+                  >
+                  <i className="fa-brands fa-whatsapp mr-1"></i>
                   {client.phone}
-                  <span className="material-symbols-outlined  text-base">
-                  forward_to_inbox
-                  </span>
-                
+                  
                 </a>
               </div>
             </div>
 
-            
-              <button
-                onClick={() => handleEditClick(client)}
-                className="flex bg-primary items-center "
-              >
-                <span className="material-symbols-outlined text-white px-3">
-                  edit
-                </span>
-              </button>
-            
+            <button
+              onClick={() => handleEditClick(client)}
+              className="flex bg-primary items-center "
+            >
+              
+              <i className="fas fa-pen-to-square text-white px-3 text-lg"></i>
+            </button>
           </li>
         ))}
       </ul>

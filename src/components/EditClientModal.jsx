@@ -123,7 +123,7 @@ function EditClientModal({ client, onClose }) {
               type="submit"
             >
               <div className="rounded h-14 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-primary">
-                <span className="material-symbols-outlined">save</span>
+              <i className="fa-solid fa-floppy-disk "></i>
               </div>
               <p className="">Guardar</p>
             </button>
@@ -134,7 +134,7 @@ function EditClientModal({ client, onClose }) {
               className="bg-ligth-gray text-center w-full rounded h-12 relative text-white  font-semibold group"
             >
               <div className="rounded h-12 w-1/6 flex items-center justify-center absolute top-0 group-hover:w-[100%] z-10 duration-500 bg-gray">
-                <span className="material-symbols-outlined">close</span>
+              <i className="fa-solid fa-xmark"></i>
               </div>
               <p className="">Cancelar</p>
             </button>
