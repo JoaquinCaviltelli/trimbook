@@ -46,7 +46,7 @@ function Menu() {
       <button
         ref={buttonRef} // Asignamos la referencia al botón
         onClick={toggleMenu}
-        className={`fixed top-6 right-6 w-12 h-12 p-2 rounded z-10 ${
+        className={`fixed top-6 right-6 w-12 h-12 p-2 rounded z-20 ${
           isOpen ? "bg-white text-primary" : "bg-primary text-white"
         }`} // Cambio de fondo según el estado del menú
       >
@@ -60,7 +60,7 @@ function Menu() {
       {/* Menú lateral con animación */}
       <div
         ref={menuRef} // Asignamos la referencia al contenedor del menú
-        className={`fixed top-0 right-0 h-full bg-primary p-6 pt-32 transition-all duration-300 transform ${
+        className={`fixed z-10 top-0 right-0 h-full bg-primary p-6 pt-32 transition-all duration-300 transform ${
           isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         }`}
       >
