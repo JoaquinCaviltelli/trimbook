@@ -36,7 +36,7 @@ function EditClientModal({ client, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-white p-6">
+    <div className="fixed inset-0 bg-white p-6 z-40">
       <div className=" flex justify-center items-center flex-col  h-full max-w-lg m-auto">
         <h4 className=" mb-16 text-center w-full text-primary">Edit Client</h4>
         <img

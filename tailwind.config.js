@@ -3,6 +3,17 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,vue}"],
   theme: {
     extend: {
+      transitionProperty: {
+        'all': 'all',
+      },
+      translate: {
+        'full': '100%', // Esto es lo que Tailwind usa por defecto.
+        '-full': '-100%',
+      },
+      opacity: {
+        '0': '0',
+        '100': '1',
+      },
       colors: {
         primary: "#17795E",
         secundary: "#55ae90",

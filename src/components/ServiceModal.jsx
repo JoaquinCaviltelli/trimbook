@@ -93,7 +93,7 @@ function ServiceModal({ service, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-white p-6">
+    <div className="fixed inset-0 bg-white p-6 z-40">
       <div className="flex justify-center items-center flex-col h-full max-w-lg m-auto">
         <h4 className="mb-28 text-center w-full text-primary">
           {service ? "Editar Servicio" : "Añadir Servicio"}

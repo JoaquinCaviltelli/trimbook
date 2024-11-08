@@ -14,12 +14,13 @@ function LoginPage() {
   }, [user, navigate]);
 
   return (
-    <div className="fixed inset-0 bg-white p-6">
+    <div className="fixed inset-0 bg-primary p-6">
       <div className="flex items-center justify-center h-full bg-gray-100 p-6">
         <button
           onClick={signInWithGoogle}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md"
+          className="px-5 py-3 bg-white text-primary rounded shadow-md font-medium"
         >
+          <i className="fa-brands fa-google mr-3"></i>
           Iniciar con Google
         </button>
       </div>

@@ -73,7 +73,6 @@ export const AuthProvider = ({ children }) => {
         const nonWorkingDaysList = scheduleData.nonWorkingDays || []; // Si el campo no existe, inicializamos como array vacío
         setNonWorkingDays(nonWorkingDaysList);
       } else {
-        console.warn("Documento de días no laborables no encontrado.");
         setNonWorkingDays([]); // Inicializamos con un array vacío si no existe el documento
       }
     } catch (error) {

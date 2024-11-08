@@ -84,19 +84,19 @@ function WorkSchedulePage() {
       <h4 className="text-xl font-bold mb-4 text-gray">Horarios Laborales</h4>
       <ul className="flex flex-col gap-4">
         {daysOfWeek.map((day) => (
-          <li key={day} className="p-4 pb-0  text-gray gap-4 bg-white shadow-lg">
-            <div className="flex gap-2 items-center mb-3 ">
+          <li key={day} className="  text-gray gap-4 bg-white shadow">
+            <div className="flex gap-2 items-center">
               <button
                 onClick={() => handleAddScheduleClick(day)}
-                className="p-2 w-8 h-8 flex justify-center items-center bg-primary text-white"
+                className=" w-6 h-full px-4 py-2 flex justify-center items-center bg-primary text-white"
               >
                 <i className="fa-solid fa-plus"></i>
               </button>
-              <p className="font-bold capitalize text-primary">{day}</p>
+              <p className="font-bold text-sm capitalize text-primary">{day}</p>
             </div>
-            <ul className={`flex gap-1 flex-col justify-center items-start ${schedules[day] && "pb-4"}`}>
+            <ul className={`flex gap-1 px-4 flex-col justify-center items-start ${schedules[day] && "pb-4"}`}>
               {schedules[day] && (
-                <div className="flex gap-2 font-medium justify-between items-center  text-xs">
+                <div className="flex gap-2 mt-4 font-medium justify-between items-center  text-xs">
                   <p className="w-16">Desde</p>
                   <p className="w-16">Hasta</p>
                 </div>
