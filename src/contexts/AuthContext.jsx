@@ -9,9 +9,9 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [clients, setClients] = useState([]); // Almacenar clientes
-  const [services, setServices] = useState([]); // Almacenar servicios del admin
-  const [schedules, setSchedules] = useState({}); // Almacenar horarios
+  const [clients, setClients] = useState([]);
+  const [services, setServices] = useState([]);
+  const [schedules, setSchedules] = useState({});
   const [nonWorkingDays, setNonWorkingDays] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -65,19 +65,25 @@ export const AuthProvider = ({ children }) => {
   // Cargar días no laborables desde Firestore
   const loadNonWorkingDays = async (uid) => {
     try {
-      const scheduleRef = doc(db, "Admin", uid); // Referencia al documento del admin
+      const scheduleRef = doc(db, "Admin", uid);
       const scheduleDoc = await getDoc(scheduleRef);
 
       if (scheduleDoc.exists()) {
         const scheduleData = scheduleDoc.data();
-        const nonWorkingDaysList = scheduleData.nonWorkingDays || []; // Si el campo no existe, inicializamos como array vacío
+        const nonWorkingDaysList = scheduleData.nonWorkingDays || [];
         setNonWorkingDays(nonWorkingDaysList);
       } else {
-        setNonWorkingDays([]); // Inicializamos con un array vacío si no existe el documento
+        setNonWorkingDays([]);
       }
     } catch (error) {
       console.error("Error loading non-working days:", error);
     }
+  };
+
+  // Función para verificar si un día es laborable o no
+  const isWorkingDay = (date) => {
+    const dateString = date.toISOString().split("T")[0];
+    return !nonWorkingDays.includes(dateString);
   };
 
   useEffect(() => {
@@ -87,7 +93,6 @@ export const AuthProvider = ({ children }) => {
         const userDoc = await getDoc(userRef);
 
         if (!userDoc.exists()) {
-          // Crear nuevo usuario con rol "client" y sin teléfono
           const newUser = {
             name: user.displayName,
             email: user.email,
@@ -98,20 +103,18 @@ export const AuthProvider = ({ children }) => {
           };
           await setDoc(userRef, newUser);
           setUser(newUser);
-          navigate("/phone"); // Redirigir para completar el teléfono
+          navigate("/phone");
         } else {
           const existingUser = userDoc.data();
           setUser(existingUser);
 
-          // Cargar clientes, servicios y horarios si el usuario es "admin"
           if (existingUser.role === "admin") {
-            await loadClients(); // Cargar lista de clientes solo si es admin
-            await loadServices(user.uid); // Cargar lista de servicios solo si es admin
-            await loadSchedules(user.uid); // Cargar horarios
+            await loadClients();
+            await loadServices(user.uid);
+            await loadSchedules(user.uid);
             await loadNonWorkingDays(user.uid);
           }
 
-          // Redirigir según el estado del usuario
           if (!existingUser.phone) {
             navigate("/phone");
           } else if (existingUser.role === "admin") {
@@ -140,14 +143,15 @@ export const AuthProvider = ({ children }) => {
         user,
         clients,
         services,
-        schedules, // Proveer horarios
+        schedules,
         loading,
         signInWithGoogle,
         loadClients,
         loadServices,
-        loadSchedules, // Asegúrate de incluir loadSchedules aquí
-        nonWorkingDays, // Nuevo estado para días no laborables
-        loadNonWorkingDays, // Nueva función
+        loadSchedules,
+        nonWorkingDays,
+        loadNonWorkingDays,
+        isWorkingDay, // Proveer isWorkingDay
       }}
     >
       {children}

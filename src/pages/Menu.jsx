@@ -60,7 +60,7 @@ function Menu() {
       {/* Menú lateral con animación */}
       <div
         ref={menuRef} // Asignamos la referencia al contenedor del menú
-        className={`fixed z-10 top-0 right-0 h-full bg-primary p-6 pt-32 transition-all duration-300 transform ${
+        className={`fixed z-10 top-0 right-0 h-full bg-primary p-8 pt-32 transition-all duration-300 transform  ${
           isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         }`}
       >
@@ -112,11 +112,20 @@ function Menu() {
           {/* Item de menú 5 */}
           <li className="rounded-lg transition duration-300 bg-white transform">
             <Link
-              to="/admin/NonWorkingDaysPage"
+              to="/admin/non-working-days"
               className="flex flex-col items-center gap-2 p-6 text-center"
             >
               <XCircle className="text-primary text-4xl" />
               <p className="text-xs text-primary">NoWork</p>
+            </Link>
+          </li>
+          <li className="bg-white rounded-lg transition duration-300 transform">
+            <Link
+              to="/admin/daily-agenda"
+              className="flex flex-col items-center gap-2 p-6 text-center"
+            >
+              <Calendar className="text-primary text-4xl" />
+              <p className="text-xs text-primary">Agenda</p>
             </Link>
           </li>
         </ul>
