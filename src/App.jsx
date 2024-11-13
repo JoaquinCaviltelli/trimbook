@@ -28,7 +28,7 @@ function App() {
         <Route path="services" element={<ServicesPage />} />
         <Route path="work-hours" element={<WorkHoursPage />} />
         <Route path="non-working-days" element={<NonWorkingDaysPage />} />
-        <Route path="daily-agenda" element={<DailyAgendaPage />} /> {/* Nueva ruta para agenda diaria */}
+        <Route path="/admin" element={<DailyAgendaPage />} /> {/* Nueva ruta para agenda diaria */}
       </Route>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/phone" element={<PhonePage />} />

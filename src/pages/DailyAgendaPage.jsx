@@ -196,7 +196,7 @@ const DailyAgendaPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6">
+    <div className="flex flex-col items-center ">
       <h2 className="text-3xl font-semibold text-gray-800 mb-4">Agenda Diaria</h2>
       <p className="text-lg text-gray-600 mb-6">
         Horario para el día:{" "}
@@ -223,7 +223,7 @@ const DailyAgendaPage = () => {
                 className={`bg-white grid grid-cols-6 ${block.available ? "border-gray" : "text-green-800"}`}
                 onClick={() => block.available && openAssignModal(block.time)}
               >
-                <span className="text-xs col-span-1 text-gray p-2 text-nowrap text-right">{block.time}</span>
+                <span className="text-xs col-span-1 text-gray p-2 text-nowrap text-left">{block.time}</span>
                 <div className={`flex flex-col rounded border w-full p-4 col-span-5 ${block.available ? "border-gray" : "border-green-800"}`}>
                   <span className={`text-sm font-medium ${block.available ? "text-gray" : ""}`}>
                     {block.available ? (

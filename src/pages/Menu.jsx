@@ -1,137 +1,107 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Home, Users, Calendar, Clock, XCircle } from "react-feather"; // Importamos los íconos de Feather
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // Para la navegación
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // FontAwesome para íconos
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"; // Íconos de apertura y cierre
 
-function Menu() {
-  const [isOpen, setIsOpen] = useState(false); // Estado para controlar si el menú está abierto o cerrado
-  const menuRef = useRef(null); // Referencia al contenedor del menú
-  const buttonRef = useRef(null); // Referencia al botón que abre o cierra el menú
-  const location = useLocation(); // Usamos el hook useLocation para detectar cambios de ruta
+// Importación de los íconos personalizados (SVG)
+import { Home, Users, Calendar, Clock, XCircle } from "react-feather"; 
 
-  // Función para alternar el estado de apertura/cierre
-  const toggleMenu = () => {
-    setIsOpen(!isOpen); // Alternamos el estado del menú
-  };
+const Menu = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Función para manejar clics fuera del menú
-  const handleClickOutside = (e) => {
-    // Verificamos si el clic ocurrió fuera del menú y fuera del botón
-    if (
-      menuRef.current && !menuRef.current.contains(e.target) &&
-      buttonRef.current && !buttonRef.current.contains(e.target)
-    ) {
-      setIsOpen(false); // Si el clic está fuera del menú y del botón, lo cerramos
-    }
-  };
+  // Función para cambiar el estado del menú
+  const toggleMenu = () => setIsOpen(!isOpen);
 
-  // Usamos useEffect para escuchar clics fuera del menú
+  // Definimos los ítems del menú con iconos y rutas
+  const items = [
+    { icon: <Home className="text-white" />, label: "Home", link: "/admin" },
+    { icon: <Users className="text-white" />, label: "Clientes", link: "/admin/clients" },
+    { icon: <Calendar className="text-white" />, label: "Servicios", link: "/admin/services" },
+    { icon: <Clock className="text-white" />, label: "Horarios", link: "/admin/work-hours" },
+    { icon: <XCircle className="text-white" />, label: "NoWork", link: "/admin/non-working-days" },
+    
+  ];
+
+  // Función para cerrar el menú si se hace clic fuera de él
   useEffect(() => {
-    // Agregamos el listener para detectar clics fuera del menú
-    document.addEventListener("click", handleClickOutside);
+    const handleClickOutside = (event) => {
+      // Si el menú está abierto y el clic es fuera de la zona del menú, cerramos el menú
+      const menu = document.getElementById("menu-container");
+      const button = document.getElementById("menu-open-button");
 
-    // Limpiamos el listener cuando el componente se desmonte
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
+      if (menu && !menu.contains(event.target) && !button.contains(event.target)) {
+        setIsOpen(false);
+      }
     };
-  }, []); // Este useEffect solo se ejecuta una vez al montar el componente
 
-  // Detectamos cuando cambia la ruta y cerramos el menú
-  useEffect(() => {
-    setIsOpen(false); // Cerramos el menú al cambiar la ruta
-  }, [location]); // Dependemos de `location` para saber cuándo la ruta cambia
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div>
-      {/* Botón de abrir/cerrar menú */}
-      <button
-        ref={buttonRef} // Asignamos la referencia al botón
-        onClick={toggleMenu}
-        className={`fixed top-6 right-6 w-12 h-12 p-2 rounded z-20 ${
-          isOpen ? "bg-white text-primary" : "bg-primary text-white"
-        }`} // Cambio de fondo según el estado del menú
+    <nav className="fixed  right-14 bottom-14 flex justify-center items-center">
+      {/* Checkbox oculto que controla el estado del menú */}
+      <div className={` w-12 h-12 bg-emerald-50 transition-all  absolute rounded-full ${isOpen ? 'w-96 h-96' : 'scale-110 '}`}></div>
+      <input
+        type="checkbox"
+        id="menu-open"
+        className="hidden"
+        checked={isOpen}
+        onChange={toggleMenu}
+      />
+      
+      {/* Botón que abre/cierra el menú */}
+      <label
+        htmlFor="menu-open"
+        id="menu-open-button"
+        className={`cursor-pointer absolute bg-primary  text-white w-12 h-12 bg-gray-100 rounded-full flex justify-center items-center transition-all duration-500 transform ${isOpen ? 'scale-75 bg-secundary' : 'scale-110 '} shadow-md z-50`}
       >
-        {isOpen ? (
-          <i className="fa-solid fa-times text-2xl"></i> // Ícono de cerrar cuando el menú está abierto
-        ) : (
-          <i className="fa-solid fa-bars text-2xl"></i> // Ícono de abrir cuando el menú está cerrado
-        )}
-      </button>
+        {/* Aquí cambiamos el ícono entre faBars y faTimes dependiendo del estado del menú */}
+        <FontAwesomeIcon
+          icon={isOpen ? faTimes : faBars} // Cambiar entre los íconos
+          className={`text-2xl transition-all duration-300 transform ${isOpen ? 'rotate-90 ' : ''}`} // Transición suave al cambiar entre íconos
+        />
+      </label>
 
-      {/* Menú lateral con animación */}
+      {/* Contenedor de los íconos del menú */}
       <div
-        ref={menuRef} // Asignamos la referencia al contenedor del menú
-        className={`fixed z-10 top-0 right-0 h-full bg-primary p-8 pt-32 transition-all duration-300 transform  ${
-          isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+        id="menu-container"
+        className={`absolute flex justify-center items-center transition-all duration-300 z-40 ${
+          isOpen ? "opacity-100 " : "opacity-0"
         }`}
       >
-        <ul className="grid grid-cols-2 gap-4">
-          {/* Item de menú 1 */}
-          <li className="rounded-lg transition duration-300 bg-white transform">
-            <Link
-              to="/admin"
-              className="flex flex-col items-center gap-2 p-6 text-center"
-            >
-              <Home className="text-primary text-4xl" />
-              <p className="text-xs text-primary">Home</p>
-            </Link>
-          </li>
+        {items.map((item, index) => {
+          // Calculamos el ángulo para la disposición circular de los íconos
+          const angle = (index / items.length) * 110;
+          const radius = 150; // Radio del círculo en píxeles
 
-          {/* Item de menú 2 */}
-          <li className="rounded-lg transition duration-300 bg-white transform">
-            <Link
-              to="/admin/clients"
-              className="flex flex-col items-center gap-2 p-6 text-center"
-            >
-              <Users className="text-primary text-4xl" />
-              <p className="text-xs text-primary">Clientes</p>
-            </Link>
-          </li>
+          // Calculamos las posiciones X e Y para los íconos
+          const x = -radius * Math.cos((angle * Math.PI) / 180); // Movimiento en X
+          const y = -radius * Math.sin((angle * Math.PI) / 180); // Movimiento en Y
 
-          {/* Item de menú 3 */}
-          <li className="bg-white rounded-lg transition duration-300 transform">
+          return (
             <Link
-              to="/admin/services"
-              className="flex flex-col items-center gap-2 p-6 text-center"
+              key={item.label}
+              to={item.link} // Usamos el Link para la navegación
+              className={`absolute bg-primary  rounded-full w-12 h-12 flex justify-center items-center transition-all duration-300 shadow z-40`}
+              style={{
+                transform: isOpen ? `translate(${x}px, ${y}px)` : "translate(0, 0)", // Posición circular
+                opacity: isOpen ? 1 : 0, // Desvanecimiento
+                transitionDelay: `${index * 0.05}s`, // Retraso para animación
+                transitionDuration: '0.3s' // Duración de la animación
+              }}
             >
-              <Calendar className="text-primary text-4xl" />
-              <p className="text-xs text-primary">Servicios</p>
+              {/* Íconos de React Icons */}
+              {item.icon}
             </Link>
-          </li>
-
-          {/* Item de menú 4 */}
-          <li className="rounded-lg transition duration-300 bg-white transform">
-            <Link
-              to="/admin/work-hours"
-              className="flex flex-col items-center gap-2 p-6 text-center"
-            >
-              <Clock className="text-primary text-4xl" />
-              <p className="text-xs text-primary">Horarios</p>
-            </Link>
-          </li>
-
-          {/* Item de menú 5 */}
-          <li className="rounded-lg transition duration-300 bg-white transform">
-            <Link
-              to="/admin/non-working-days"
-              className="flex flex-col items-center gap-2 p-6 text-center"
-            >
-              <XCircle className="text-primary text-4xl" />
-              <p className="text-xs text-primary">NoWork</p>
-            </Link>
-          </li>
-          <li className="bg-white rounded-lg transition duration-300 transform">
-            <Link
-              to="/admin/daily-agenda"
-              className="flex flex-col items-center gap-2 p-6 text-center"
-            >
-              <Calendar className="text-primary text-4xl" />
-              <p className="text-xs text-primary">Agenda</p>
-            </Link>
-          </li>
-        </ul>
+          );
+        })}
       </div>
-    </div>
+    </nav>
   );
-}
+};
 
 export default Menu;
