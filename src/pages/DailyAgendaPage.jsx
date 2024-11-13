@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../services/firebase";
-import { collection, query, where, addDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
 import AssignTurnModal from "../components/AssignTurnModal";
 
 // Mapeo de días de la semana en inglés a español
@@ -24,14 +32,67 @@ const DailyAgendaPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [reservations, setReservations] = useState([]);
 
+  // Función para calcular la fecha según el offset (ayer, hoy, mañana, pasado mañana)
+  const getDateFor = (baseDate, offset) => {
+    const date = new Date(baseDate);
+    date.setDate(date.getDate() + offset);
+    return date;
+  };
+
+  // Estado para manejar las fechas de ayer, hoy, mañana y pasado mañana
+  const [dates, setDates] = useState({
+    yesterday: getDateFor(currentDate, -1),
+    today: currentDate,
+    tomorrow: getDateFor(currentDate, 1),
+    dayAfterTomorrow: getDateFor(currentDate, 2),
+  });
+
+  // Función para formatear la fecha en el formato adecuado
+  const formatDate = (date) => {
+    return date.toLocaleDateString("es-ES", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
+  };
+
+  // Función para manejar el cambio de fecha cuando el usuario selecciona una fecha del carrusel
+  const handleDateChange = (newDate) => {
+    setCurrentDate(newDate);
+
+    // Actualizamos el estado de las fechas (ayer, hoy, mañana, pasado mañana) según la nueva fecha seleccionada
+    setDates({
+      yesterday: getDateFor(newDate, -1),
+      today: newDate,
+      tomorrow: getDateFor(newDate, 1),
+      dayAfterTomorrow: getDateFor(newDate, 2),
+    });
+  };
+
+  // Función para separar el día, la fecha (día del mes) y el mes para estilos independientes
+  const getDateParts = (date) => {
+    const day = date.getDate(); // Día (12, 13, etc.)
+    const weekday = date.toLocaleDateString("es-ES", { weekday: "short" }); // Nombre del día (lunes, martes, etc.)
+    const month = date.toLocaleDateString("es-ES", { month: "short" }); // Mes (enero, febrero, noviembre, etc.)
+    return { day, weekday, month };
+  };
+
+  // Función para obtener las reservas
   const fetchReservations = useCallback(() => {
     const reservationsRef = collection(db, "Admin", user.uid, "reservations");
     const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
     const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999));
-    const q = query(reservationsRef, where("date", ">=", startOfDay), where("date", "<=", endOfDay));
+    const q = query(
+      reservationsRef,
+      where("date", ">=", startOfDay),
+      where("date", "<=", endOfDay)
+    );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const newReservations = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const newReservations = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setReservations(newReservations);
     });
 
@@ -43,7 +104,9 @@ const DailyAgendaPage = () => {
   }, [fetchReservations]);
 
   const generateTimeBlocks = useCallback(() => {
-    const dayOfWeek = currentDate.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+    const dayOfWeek = currentDate
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
     const dayInSpanish = dayMap[dayOfWeek];
     const daySchedule = schedules[dayInSpanish];
     if (!daySchedule) return [];
@@ -60,19 +123,29 @@ const DailyAgendaPage = () => {
       end.setHours(endHour, endMin, 0, 0);
 
       while (start < end) {
-        const time = start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+        const time = start.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
         const reservation = reservations.find((res) => res.time === time);
 
         if (reservation) {
           const reservationEndTime = new Date(reservation.date.seconds * 1000);
-          reservationEndTime.setMinutes(reservationEndTime.getMinutes() + reservation.service.duration);
+          reservationEndTime.setMinutes(
+            reservationEndTime.getMinutes() + reservation.service.duration
+          );
 
           let blocksToMark = Math.ceil(reservation.service.duration / 15);
           let currentBlock = start;
           let isFirstBlock = true;
 
           while (currentBlock < reservationEndTime && blocksToMark > 0) {
-            const blockTime = currentBlock.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+            const blockTime = currentBlock.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            });
             if (!reservedTimes.has(blockTime)) {
               if (isFirstBlock) {
                 blocks.push({
@@ -80,7 +153,7 @@ const DailyAgendaPage = () => {
                   available: false,
                   client: reservation.client,
                   service: reservation.service,
-                  reservationId: reservation.id,  // Añadimos el ID de la reserva
+                  reservationId: reservation.id, // Añadimos el ID de la reserva
                 });
                 isFirstBlock = false;
               } else {
@@ -113,9 +186,6 @@ const DailyAgendaPage = () => {
     setTimeBlocks(blocks);
   }, [generateTimeBlocks]);
 
-  const goToPreviousDay = () => setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 1)));
-  const goToNextDay = () => setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + 1)));
-
   const openAssignModal = (time) => {
     setSelectedDate(currentDate);
     setSelectedTime(time);
@@ -127,7 +197,11 @@ const DailyAgendaPage = () => {
     const date = new Date();
     date.setHours(hour, minute, 0, 0);
     date.setMinutes(date.getMinutes() + 15);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
   };
 
   const handleAssignTurn = async ({ client, service, time }) => {
@@ -137,7 +211,9 @@ const DailyAgendaPage = () => {
     let currentTime = time;
 
     for (let i = 0; i < durationInBlocks; i++) {
-      const block = timeBlocks.find((block) => block.time === currentTime && block.available);
+      const block = timeBlocks.find(
+        (block) => block.time === currentTime && block.available
+      );
       if (block) {
         availableBlocks.push(block);
         if (!foundStartBlock) foundStartBlock = true;
@@ -163,8 +239,18 @@ const DailyAgendaPage = () => {
     try {
       const reservationRef = collection(db, "Admin", user.uid, "reservations");
       const reservation = {
-        client: { id: client.id, name: client.name, email: client.email, phone: client.phone },
-        service: { id: service.id, serviceName: service.serviceName, duration: service.serviceDuration, price: service.servicePrice },
+        client: {
+          id: client.id,
+          name: client.name,
+          email: client.email,
+          phone: client.phone,
+        },
+        service: {
+          id: service.id,
+          serviceName: service.serviceName,
+          duration: service.serviceDuration,
+          price: service.servicePrice,
+        },
         time,
         date: selectedDate,
         createdAt: new Date(),
@@ -181,12 +267,24 @@ const DailyAgendaPage = () => {
   const handleDeleteReservation = async (reservationId) => {
     try {
       // Eliminamos la reserva en Firestore
-      await deleteDoc(doc(db, "Admin", user.uid, "reservations", reservationId));
+      await deleteDoc(
+        doc(db, "Admin", user.uid, "reservations", reservationId)
+      );
 
       // Actualizamos el estado de timeBlocks para reflejar la eliminación
-      setTimeBlocks(timeBlocks.map((block) => 
-        block.reservationId === reservationId ? { ...block, available: true, client: null, service: null, reservationId: null } : block
-      ));
+      setTimeBlocks(
+        timeBlocks.map((block) =>
+          block.reservationId === reservationId
+            ? {
+                ...block,
+                available: true,
+                client: null,
+                service: null,
+                reservationId: null,
+              }
+            : block
+        )
+      );
 
       console.log("Reserva eliminada correctamente");
     } catch (error) {
@@ -196,22 +294,36 @@ const DailyAgendaPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center ">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-4">Agenda Diaria</h2>
-      <p className="text-lg text-gray-600 mb-6">
-        Horario para el día:{" "}
-        <span className="font-semibold text-blue-600">
-          {currentDate.toLocaleDateString()}
-        </span>
-      </p>
+    <div className="flex flex-col items-center">
+      <h2 className="self-start text-4xl font-bold text-gray">Moreletti</h2>
+      <p className="mb-6 self-start leading-3 text-gray">Gonzalo Moreno</p>
 
-      <div className="flex justify-center mb-6">
-        <button onClick={goToPreviousDay} className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition">
-          Día anterior
-        </button>
-        <button onClick={goToNextDay} className="ml-4 px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition">
-          Día siguiente
-        </button>
+      {/* Carrusel de fechas */}
+      <div className="grid grid-cols-4 gap-2 mb-8 w-full max-w-xl justify-between items-center">
+        {["yesterday", "today", "tomorrow", "dayAfterTomorrow"].map((key) => {
+          const dateParts = getDateParts(dates[key]);
+          const isSelected = key === "today"; // Compara si la clave es 'today' (día actual)
+
+          return (
+            <div
+              key={key}
+              className={`flex col-span-1 items-center cursor-pointer ${
+                isSelected ? "bg-gray-800 text-white" : "text-gray"
+              }`} // Cambia el fondo y color del texto si es el día seleccionado
+              onClick={() => handleDateChange(dates[key])}
+            >
+              <div
+                className={`flex gap-1 border rounded py-4 w-full flex-col items-center ${
+                  isSelected ? "bg-gray text-white" : ""
+                }`}
+              >
+                <span className="font-medium text-xs">{dateParts.weekday}</span>
+                <span className="font-semibold text-4xl">{dateParts.day}</span>
+                <span className="font-bold text-xs">{dateParts.month}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="w-full max-w-3xl">
@@ -220,12 +332,26 @@ const DailyAgendaPage = () => {
             timeBlocks.map((block, index) => (
               <li
                 key={index}
-                className={`bg-white flex ${block.available ? "border-gray" : "text-green-800"}`}
+                className={`bg-white flex ${
+                  block.available ? "border-gray" : "text-green-800"
+                }`}
                 onClick={() => block.available && openAssignModal(block.time)}
               >
-                <span className="text-xs w-14 text-gray py-3 text-nowrap text-left">{block.time}</span>
-                <div className={`flex flex-col  rounded border w-full py-2 px-4  ${block.available ? "border-gray" : "border-green-800 bg-green-50"}`}>
-                  <span className={`text-sm font-medium ${block.available ? "text-gray" : ""}`}>
+                <span className="text-xs w-14 text-gray py-3 text-nowrap text-left">
+                  {block.time}
+                </span>
+                <div
+                  className={`flex flex-col rounded border w-full py-2 px-4 ${
+                    block.available
+                      ? "border-gray"
+                      : "border-green-800 bg-green-50"
+                  }`}
+                >
+                  <span
+                    className={`text-sm font-medium ${
+                      block.available ? "text-gray" : ""
+                    }`}
+                  >
                     {block.available ? (
                       "Disponible"
                     ) : (
@@ -237,19 +363,18 @@ const DailyAgendaPage = () => {
                         <p>{block.client.phone}</p>
                         <div className="mt-2 flex justify-between">
                           <div>
-                          <p>{block.service.serviceName}</p>
-                          <p>${block.service.price}</p>
-
+                            <p>{block.service.serviceName}</p>
+                            <p>${block.service.price}</p>
                           </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteReservation(block.reservationId);
-                          }}
-                          className="mt-2 text-white py-2 px-4 text-xs rounded bg-red-700"
-                        >
-                          Eliminar
-                        </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteReservation(block.reservationId);
+                            }}
+                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-red-700"
+                          >
+                            Eliminar
+                          </button>
                         </div>
                       </>
                     )}
@@ -258,7 +383,9 @@ const DailyAgendaPage = () => {
               </li>
             ))
           ) : (
-            <p className="text-gray-600 text-center">No hay bloques de tiempo disponibles para este día.</p>
+            <p className="text-gray-600 text-center">
+              No hay bloques de tiempo disponibles para este día.
+            </p>
           )}
         </ul>
       </div>
