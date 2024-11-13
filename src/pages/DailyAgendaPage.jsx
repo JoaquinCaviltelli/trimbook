@@ -214,17 +214,17 @@ const DailyAgendaPage = () => {
         </button>
       </div>
 
-      <div className="w-full max-w-3xl px-4">
+      <div className="w-full max-w-3xl">
         <ul className="space-y-2">
           {timeBlocks.length > 0 ? (
             timeBlocks.map((block, index) => (
               <li
                 key={index}
-                className={`bg-white grid grid-cols-6 ${block.available ? "border-gray" : "text-green-800"}`}
+                className={`bg-white flex ${block.available ? "border-gray" : "text-green-800"}`}
                 onClick={() => block.available && openAssignModal(block.time)}
               >
-                <span className="text-xs col-span-1 text-gray p-2 text-nowrap text-left">{block.time}</span>
-                <div className={`flex flex-col rounded border w-full p-4 col-span-5 ${block.available ? "border-gray" : "border-green-800"}`}>
+                <span className="text-xs w-14 text-gray py-3 text-nowrap text-left">{block.time}</span>
+                <div className={`flex flex-col  rounded border w-full py-2 px-4  ${block.available ? "border-gray" : "border-green-800 bg-green-50"}`}>
                   <span className={`text-sm font-medium ${block.available ? "text-gray" : ""}`}>
                     {block.available ? (
                       "Disponible"
@@ -235,19 +235,22 @@ const DailyAgendaPage = () => {
                           <p>{block.service.duration} min</p>
                         </div>
                         <p>{block.client.phone}</p>
-                        <div className="mt-2">
+                        <div className="mt-2 flex justify-between">
+                          <div>
                           <p>{block.service.serviceName}</p>
                           <p>${block.service.price}</p>
-                        </div>
+
+                          </div>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeleteReservation(block.reservationId);
                           }}
-                          className="mt-2 text-red-500 hover:text-red-700"
+                          className="mt-2 text-white py-2 px-4 text-xs rounded bg-red-700"
                         >
-                          Eliminar reserva
+                          Eliminar
                         </button>
+                        </div>
                       </>
                     )}
                   </span>

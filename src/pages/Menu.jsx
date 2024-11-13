@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // FontAwesome
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"; // Íconos de apertura y cierre
 
 // Importación de los íconos personalizados (SVG)
-import { Home, Users, Calendar, Clock, XCircle } from "react-feather"; 
+import { Home, Users, Calendar, Scissors, Clock, XCircle } from "react-feather"; 
 
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,11 +14,11 @@ const Menu = () => {
 
   // Definimos los ítems del menú con iconos y rutas
   const items = [
-    { icon: <Home className="text-white" />, label: "Home", link: "/admin" },
-    { icon: <Users className="text-white" />, label: "Clientes", link: "/admin/clients" },
-    { icon: <Calendar className="text-white" />, label: "Servicios", link: "/admin/services" },
-    { icon: <Clock className="text-white" />, label: "Horarios", link: "/admin/work-hours" },
-    { icon: <XCircle className="text-white" />, label: "NoWork", link: "/admin/non-working-days" },
+    { icon: <XCircle className="" />, label: "NoWork", link: "/admin/non-working-days" },
+    { icon: <Clock className="" />, label: "Horarios", link: "/admin/work-hours" },
+    { icon: <Scissors className="" />, label: "Servicios", link: "/admin/services" },
+    { icon: <Users className="" />, label: "Clientes", link: "/admin/clients" },
+    { icon: <Calendar className="" />, label: "Home", link: "/admin" },
     
   ];
 
@@ -42,9 +42,9 @@ const Menu = () => {
   }, []);
 
   return (
-    <nav className="fixed  right-14 bottom-14 flex justify-center items-center">
+    <nav className="fixed  right-14 bottom-14 flex justify-center shadow-xl items-center">
       {/* Checkbox oculto que controla el estado del menú */}
-      <div className={` w-12 h-12 bg-emerald-50 transition-all  absolute rounded-full ${isOpen ? 'w-96 h-96' : 'scale-110 '}`}></div>
+      <div className={` w-8 h-8 bg-primary transition-all duration-500 absolute rounded-full  ${isOpen ? 'w-96 h-96' : ' '}`}></div>
       <input
         type="checkbox"
         id="menu-open"
@@ -57,12 +57,12 @@ const Menu = () => {
       <label
         htmlFor="menu-open"
         id="menu-open-button"
-        className={`cursor-pointer absolute bg-primary  text-white w-12 h-12 bg-gray-100 rounded-full flex justify-center items-center transition-all duration-500 transform ${isOpen ? 'scale-75 bg-secundary' : 'scale-110 '} shadow-md z-50`}
+        className={`cursor-pointer absolute  bg-primary  w-12 h-12 bg-gray-100 rounded-full flex justify-center items-center transition-all duration-500 transform ${isOpen ? 'scale-75 bg-white' : 'shadow-md shadow-gray '}  z-50 `}
       >
         {/* Aquí cambiamos el ícono entre faBars y faTimes dependiendo del estado del menú */}
         <FontAwesomeIcon
           icon={isOpen ? faTimes : faBars} // Cambiar entre los íconos
-          className={`text-2xl transition-all duration-300 transform ${isOpen ? 'rotate-90 ' : ''}`} // Transición suave al cambiar entre íconos
+          className={`text-2xl transition-all  duration-300 transform ${isOpen ? 'rotate-90 text-primary ' : 'text-white '}`} // Transición suave al cambiar entre íconos
         />
       </label>
 
@@ -86,12 +86,12 @@ const Menu = () => {
             <Link
               key={item.label}
               to={item.link} // Usamos el Link para la navegación
-              className={`absolute bg-primary  rounded-full w-12 h-12 flex justify-center items-center transition-all duration-300 shadow z-40`}
+              className={`absolute bg-white  rounded-full w-12 h-12 flex justify-center  text-primary  items-center transition-all duration-300 z-40`}
               style={{
                 transform: isOpen ? `translate(${x}px, ${y}px)` : "translate(0, 0)", // Posición circular
                 opacity: isOpen ? 1 : 0, // Desvanecimiento
                 transitionDelay: `${index * 0.05}s`, // Retraso para animación
-                transitionDuration: '0.3s' // Duración de la animación
+                transitionDuration: '0.3s', // Duración de la animación
               }}
             >
               {/* Íconos de React Icons */}
