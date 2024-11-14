@@ -309,7 +309,7 @@ const DailyAgendaPage = () => {
       return;
     }
   
-    const message = `¡Hola ${client.name}!\nTu turno ha sido confirmado\n *${formatDate(date)} a las ${time}.*\n "${service.serviceName}"\nPrecio: $${service.price}\n\n¡Te esperamos!`;
+    const message = `¡Hola ${client.name}!\nTu turno ha sido confirmado\n${formatDate(date)} a las ${time}.\n${service.serviceName}: $${service.price}\n\n¡Te esperamos!`;
     const phoneNumber = client.phone.replace(/[^\d]/g, ""); // Eliminar cualquier caracter no numérico
     const url = `https://wa.me/+549${phoneNumber}?text=${encodeURIComponent(message)}`;
     return url;
