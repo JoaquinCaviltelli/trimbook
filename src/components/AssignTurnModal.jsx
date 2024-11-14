@@ -15,8 +15,8 @@ const AssignTurnModal = ({ isOpen, onClose, onAssignTurn, time, date, clients, s
 
   return (
     isOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div className="bg-white p-6 rounded-lg shadow-md w-96">
+      <div className="fixed inset-0 bg-white flex justify-center items-center">
+        <div className="bg-white w-full p-6 max-w-lg">
           <h3 className="text-2xl font-semibold mb-4">Asignar Turno</h3>
           <p className="mb-4">
             <strong>Fecha:</strong> {date.toLocaleDateString()}<br />

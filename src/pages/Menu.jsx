@@ -14,11 +14,11 @@ const Menu = () => {
 
   // Definimos los ítems del menú con iconos y rutas
   const items = [
-    { icon: <XCircle className="" />, label: "NoWork", link: "/admin/non-working-days" },
-    { icon: <Clock className="" />, label: "Horarios", link: "/admin/work-hours" },
-    { icon: <Scissors className="" />, label: "Servicios", link: "/admin/services" },
-    { icon: <Users className="" />, label: "Clientes", link: "/admin/clients" },
-    { icon: <Calendar className="" />, label: "Home", link: "/admin" },
+    { icon: <XCircle className="scale-125" />, label: "NoWork", link: "/admin/non-working-days" },
+    { icon: <Clock className="scale-125" />, label: "Horarios", link: "/admin/work-hours" },
+    { icon: <Scissors className="scale-125" />, label: "Servicios", link: "/admin/services" },
+    { icon: <Users className="scale-125" />, label: "Clientes", link: "/admin/clients" },
+    { icon: <Calendar className="scale-125" />, label: "Home", link: "/admin" },
     
   ];
 
@@ -44,7 +44,7 @@ const Menu = () => {
   return (
     <nav className="fixed  right-14 bottom-14 flex justify-center shadow-xl items-center">
       {/* Checkbox oculto que controla el estado del menú */}
-      <div className={` w-8 h-8 bg-primary transition-all duration-500 absolute rounded-full  ${isOpen ? 'w-96 h-96' : ' '}`}></div>
+      <div className={` w-8 h-8 bg-primary transition-all duration-500 absolute rounded-full  ${isOpen ? 'w-[500px] h-[500px]' : ' '}`}></div>
       <input
         type="checkbox"
         id="menu-open"
@@ -57,7 +57,7 @@ const Menu = () => {
       <label
         htmlFor="menu-open"
         id="menu-open-button"
-        className={`cursor-pointer absolute  bg-primary  w-12 h-12 bg-gray-100 rounded-full flex justify-center items-center transition-all duration-500 transform ${isOpen ? 'scale-75 bg-white' : 'shadow-md shadow-gray '}  z-50 `}
+        className={`cursor-pointer absolute  bg-primary  w-16 h-16 bg-gray-100 rounded-full flex justify-center items-center transition-all duration-500 transform ${isOpen ? 'scale-75 bg-white' : 'shadow-md shadow-gray '}  z-50 `}
       >
         {/* Aquí cambiamos el ícono entre faBars y faTimes dependiendo del estado del menú */}
         <FontAwesomeIcon
@@ -76,7 +76,7 @@ const Menu = () => {
         {items.map((item, index) => {
           // Calculamos el ángulo para la disposición circular de los íconos
           const angle = (index / items.length) * 110;
-          const radius = 150; // Radio del círculo en píxeles
+          const radius = 200; // Radio del círculo en píxeles
 
           // Calculamos las posiciones X e Y para los íconos
           const x = -radius * Math.cos((angle * Math.PI) / 180); // Movimiento en X
@@ -86,7 +86,7 @@ const Menu = () => {
             <Link
               key={item.label}
               to={item.link} // Usamos el Link para la navegación
-              className={`absolute bg-white  rounded-full w-12 h-12 flex justify-center  text-primary  items-center transition-all duration-300 z-40`}
+              className={`absolute bg-white  rounded-full w-16 h-16 flex justify-center  text-primary  items-center transition-all duration-300 z-40`}
               style={{
                 transform: isOpen ? `translate(${x}px, ${y}px)` : "translate(0, 0)", // Posición circular
                 opacity: isOpen ? 1 : 0, // Desvanecimiento
