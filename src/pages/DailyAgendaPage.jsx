@@ -421,24 +421,27 @@ const DailyAgendaPage = () => {
                             </p>
                             <p className="text-xs">${block.service.price}</p>
                           </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteReservation(block.reservationId);
-                            }}
-                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-gray"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
+                          <div className="flex gap-1">
+
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleShareOnWhatsApp(block);
                             }}
-                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-blue-500"
-                          >
-                            <i className="fa-brands fa-whatsapp"></i> Compartir
+                            className="mt-2 text-white py-2 px-4  rounded bg-green-600"
+                            >
+                            <i className="fa-brands fa-whatsapp"></i>
                           </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteReservation(block.reservationId);
+                            }}
+                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-red-700"
+                            >
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                            </div>
                         </div>
                       </>
                     )}
