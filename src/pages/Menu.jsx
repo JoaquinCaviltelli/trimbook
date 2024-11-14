@@ -3,8 +3,7 @@ import { Link } from "react-router-dom"; // Para la navegación
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // FontAwesome para íconos
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons"; // Íconos de apertura y cierre
 
-// Importación de los íconos personalizados (SVG)
-import { Home, Users, Calendar, Scissors, Clock, XCircle } from "react-feather"; 
+
 
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,11 +13,11 @@ const Menu = () => {
 
   // Definimos los ítems del menú con iconos y rutas
   const items = [
-    { icon: <XCircle className="scale-125" />, label: "NoWork", link: "/admin/non-working-days" },
-    { icon: <Clock className="scale-125" />, label: "Horarios", link: "/admin/work-hours" },
-    { icon: <Scissors className="scale-125" />, label: "Servicios", link: "/admin/services" },
-    { icon: <Users className="scale-125" />, label: "Clientes", link: "/admin/clients" },
-    { icon: <Calendar className="scale-125" />, label: "Home", link: "/admin" },
+    { icon: <i className="fa-solid fa-calendar-xmark text-2xl"></i>, label: "NoWork", link: "/admin/non-working-days" },
+    { icon: <i className="fa-solid fa-clock text-2xl"></i>, label: "Horarios", link: "/admin/work-hours" },
+    { icon: <i className="fa-solid fa-scissors text-2xl"></i>, label: "Servicios", link: "/admin/services" },
+    { icon: <i className="fa-solid fa-user-group text-2xl"></i>, label: "Clientes", link: "/admin/clients" },
+    { icon: <i className="fa-solid fa-calendar-day text-2xl"></i>, label: "Home", link: "/admin" },
     
   ];
 
@@ -44,7 +43,7 @@ const Menu = () => {
   return (
     <nav className="fixed  right-14 bottom-14 flex justify-center shadow-xl items-center">
       {/* Checkbox oculto que controla el estado del menú */}
-      <div className={` w-8 h-8 bg-primary transition-all duration-500 absolute rounded-full  ${isOpen ? 'w-[500px] h-[500px]' : ' '}`}></div>
+      <div className={` w-8 h-8 bg-primary transition-all duration-500 absolute rounded-full  ${isOpen ? 'w-[440px] h-[440px]' : ' '}`}></div>
       <input
         type="checkbox"
         id="menu-open"
@@ -76,7 +75,7 @@ const Menu = () => {
         {items.map((item, index) => {
           // Calculamos el ángulo para la disposición circular de los íconos
           const angle = (index / items.length) * 110;
-          const radius = 200; // Radio del círculo en píxeles
+          const radius = 180; // Radio del círculo en píxeles
 
           // Calculamos las posiciones X e Y para los íconos
           const x = -radius * Math.cos((angle * Math.PI) / 180); // Movimiento en X
@@ -86,7 +85,7 @@ const Menu = () => {
             <Link
               key={item.label}
               to={item.link} // Usamos el Link para la navegación
-              className={`absolute bg-white  rounded-full w-16 h-16 flex justify-center  text-primary  items-center transition-all duration-300 z-40`}
+              className={`absolute   rounded-full w-12 h-12 flex flex-col justify-center  text-white  items-center transition-all duration-300 z-40`}
               style={{
                 transform: isOpen ? `translate(${x}px, ${y}px)` : "translate(0, 0)", // Posición circular
                 opacity: isOpen ? 1 : 0, // Desvanecimiento
@@ -96,6 +95,10 @@ const Menu = () => {
             >
               {/* Íconos de React Icons */}
               {item.icon}
+              <p className="text-[10px]">
+                
+              {item.label}
+              </p>
             </Link>
           );
         })}

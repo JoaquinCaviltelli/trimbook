@@ -110,10 +110,10 @@ const DailyAgendaPage = () => {
     const dayInSpanish = dayMap[dayOfWeek];
     const daySchedule = schedules[dayInSpanish];
     if (!daySchedule) return [];
-
+  
     const blocks = [];
     const reservedTimes = new Set();
-
+  
     daySchedule.forEach(({ startTime, endTime }) => {
       const [startHour, startMin] = startTime.split(":").map(Number);
       const [endHour, endMin] = endTime.split(":").map(Number);
@@ -121,7 +121,7 @@ const DailyAgendaPage = () => {
       start.setHours(startHour, startMin, 0, 0);
       let end = new Date(currentDate);
       end.setHours(endHour, endMin, 0, 0);
-
+  
       while (start < end) {
         const time = start.toLocaleTimeString([], {
           hour: "2-digit",
@@ -129,17 +129,17 @@ const DailyAgendaPage = () => {
           hour12: false,
         });
         const reservation = reservations.find((res) => res.time === time);
-
+  
         if (reservation) {
           const reservationEndTime = new Date(reservation.date.seconds * 1000);
           reservationEndTime.setMinutes(
             reservationEndTime.getMinutes() + reservation.service.duration
           );
-
+  
           let blocksToMark = Math.ceil(reservation.service.duration / 15);
           let currentBlock = start;
           let isFirstBlock = true;
-
+  
           while (currentBlock < reservationEndTime && blocksToMark > 0) {
             const blockTime = currentBlock.toLocaleTimeString([], {
               hour: "2-digit",
@@ -154,6 +154,7 @@ const DailyAgendaPage = () => {
                   client: reservation.client,
                   service: reservation.service,
                   reservationId: reservation.id, // Añadimos el ID de la reserva
+                  date: reservation.date, // Agregamos la fecha de la reserva al bloque
                 });
                 isFirstBlock = false;
               } else {
@@ -170,6 +171,7 @@ const DailyAgendaPage = () => {
               available: true,
               client: null,
               service: null,
+              date: null, // En caso de que no haya reserva, asignamos null a la fecha
             });
             reservedTimes.add(time);
           }
@@ -177,9 +179,10 @@ const DailyAgendaPage = () => {
         start = new Date(start.getTime() + 15 * 60000);
       }
     });
-
+  
     return blocks;
   }, [currentDate, reservations, schedules]);
+  
 
   useEffect(() => {
     const blocks = generateTimeBlocks();
@@ -293,13 +296,51 @@ const DailyAgendaPage = () => {
     }
   };
 
+  // Función para generar la URL de WhatsApp con el mensaje de confirmación
+  const generateWhatsAppUrl = (client, service, time, date) => {
+    // Asegúrate de que 'date' es un objeto Date
+    if (date && date.seconds) {
+      date = new Date(date.seconds * 1000); // Convertimos a un objeto Date
+    }
+  
+    // Verificamos si 'date' es un objeto Date válido
+    if (!(date instanceof Date) || isNaN(date)) {
+      alert("Fecha inválida");
+      return;
+    }
+  
+    const message = `¡Hola ${client.name}!\nTu turno ha sido confirmado para el servicio "${service.serviceName}" el ${formatDate(date)} a las ${time}.\nDuración: ${service.duration} minutos\nPrecio: $${service.price}\n\n¡Te esperamos!`;
+    const phoneNumber = client.phone.replace(/[^\d]/g, ""); // Eliminar cualquier caracter no numérico
+    const url = `https://wa.me/+549${phoneNumber}?text=${encodeURIComponent(message)}`;
+    return url;
+  };
+  
+
+  // Función para manejar el clic en el botón de compartir en WhatsApp
+  const handleShareOnWhatsApp = (block) => {
+    if (block.client && block.client.phone) {
+      const { client, service, time, date } = block;
+      
+      // Verificamos si 'date' está disponible antes de intentar compartir
+      if (date) {
+        const url = generateWhatsAppUrl(client, service, time, date);
+        window.open(url, "_blank"); // Abre la URL en una nueva pestaña
+      } else {
+        alert("Este bloque no tiene una fecha asociada.");
+      }
+    } else {
+      alert("Este cliente no tiene un número de teléfono registrado.");
+    }
+  };
+  
+
   return (
     <div className="flex flex-col items-center">
       <h2 className="self-start text-4xl font-bold text-gray">Moreletti</h2>
       <p className="mb-6 self-start leading-3 text-gray">Gonzalo Moreno</p>
 
       {/* Carrusel de fechas */}
-      <div className="grid grid-cols-4 gap-2 mb-8 w-full max-w-xl justify-between items-center">
+      <div className="grid grid-cols-4 gap-2 mb-8 w-full max-w-md justify-between items-center">
         {["yesterday", "today", "tomorrow", "dayAfterTomorrow"].map((key) => {
           const dateParts = getDateParts(dates[key]);
           const isSelected = key === "today"; // Compara si la clave es 'today' (día actual)
@@ -313,13 +354,21 @@ const DailyAgendaPage = () => {
               onClick={() => handleDateChange(dates[key])}
             >
               <div
-                className={`flex gap-1 border rounded py-4 w-full flex-col items-center ${
+                className={`flex  border rounded  w-full flex-col items-center ${
                   isSelected ? "bg-gray text-white" : ""
                 }`}
               >
-                <span className="font-medium text-xs">{dateParts.weekday}</span>
-                <span className="font-semibold text-4xl">{dateParts.day}</span>
-                <span className="font-bold text-xs">{dateParts.month}</span>
+                <span
+                  className={`font-medium text-xs w-full bg-gray text-center p-1 ${
+                    isSelected
+                      ? "bg-white font-bold text-gray border rounded-t"
+                      : "text-white "
+                  }`}
+                >
+                  {dateParts.weekday}
+                </span>
+                <span className="font-bold text-3xl pt-2">{dateParts.day}</span>
+                <span className="font-bold text-xs p-1">{dateParts.month}</span>
               </div>
             </div>
           );
@@ -333,7 +382,7 @@ const DailyAgendaPage = () => {
               <li
                 key={index}
                 className={`bg-white flex ${
-                  block.available ? "border-gray" : "text-green-800"
+                  block.available ? "border-gray" : " text-gray"
                 }`}
                 onClick={() => block.available && openAssignModal(block.time)}
               >
@@ -344,7 +393,7 @@ const DailyAgendaPage = () => {
                   className={`flex flex-col rounded border w-full py-2 px-4 ${
                     block.available
                       ? "border-gray"
-                      : "border-green-800 bg-green-50"
+                      : "border-green-600  bg-green-100"
                   }`}
                 >
                   <span
@@ -356,24 +405,39 @@ const DailyAgendaPage = () => {
                       "Disponible"
                     ) : (
                       <>
-                        <div className="flex justify-between">
-                          <p>{block.client.name}</p>
-                          <p>{block.service.duration} min</p>
+                        <div className="flex justify-between items-center">
+                          <p className="font-bold text-base">
+                            {block.client.name}
+                          </p>
+                          <p className="text-xs">
+                            {block.service.duration} min
+                          </p>
                         </div>
-                        <p>{block.client.phone}</p>
+                        <p className="text-xs">{block.client.phone}</p>
                         <div className="mt-2 flex justify-between">
                           <div>
-                            <p>{block.service.serviceName}</p>
-                            <p>${block.service.price}</p>
+                            <p className="font-semibold">
+                              {block.service.serviceName}
+                            </p>
+                            <p className="text-xs">${block.service.price}</p>
                           </div>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDeleteReservation(block.reservationId);
                             }}
-                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-red-700"
+                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-gray"
                           >
-                            Eliminar
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShareOnWhatsApp(block);
+                            }}
+                            className="mt-2 text-white py-2 px-4 text-xs rounded bg-blue-500"
+                          >
+                            <i className="fa-brands fa-whatsapp"></i> Compartir
                           </button>
                         </div>
                       </>
