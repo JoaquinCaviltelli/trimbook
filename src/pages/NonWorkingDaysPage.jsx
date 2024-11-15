@@ -107,7 +107,7 @@ function NonWorkingDaysPage() {
           const { weekday, day: dayNumber, month } = formatDate(date);
           
           return (
-            <li key={day} className="mb-2 flex flex-col justify-center border rounded border-red-500 items-center w-24 relative">
+            <li key={day} className="mb-2 flex flex-col justify-center border rounded border-red-500 items-center w-24 relative z-10">
               <span className="font-bold text-xs bg-red-500 text-white w-full text-center p-2">{weekday}</span>
               <span className="text-gray text-2xl pt-3">{dayNumber}</span>
               <span className="text-gray text-sm font-medium p-1">{` de ${month}`}</span>
